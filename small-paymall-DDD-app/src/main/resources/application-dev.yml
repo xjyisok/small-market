@@ -1,5 +1,5 @@
 server:
-  port: 8091
+  port: 8080
 
 # 线程池配置
 thread:
@@ -17,7 +17,7 @@ spring:
   datasource:
     username: root
     password: 123456
-    url: jdbc:mysql://127.0.0.1:3306//s-pay-mall?useUnicode=true&characterEncoding=utf8&autoReconnect=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useSSL=true
+    url: jdbc:mysql://mysql:3306/s-pay-mall?useUnicode=true&characterEncoding=utf8&autoReconnect=true&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&useSSL=true
     driver-class-name: com.mysql.cj.jdbc.Driver
   hikari:
     pool-name: Retail_HikariCP
@@ -31,10 +31,24 @@ spring:
   type: com.zaxxer.hikari.HikariDataSource
 
  #MyBatis 配置【如需使用记得打开】
-#mybatis:
-#  mapper-locations: classpath:/mybatis/mapper/*.xml
-#  config-location:  classpath:/mybatis/config/mybatis-config.xml
-
+mybatis:
+  mapper-locations: classpath:/mybatis/mapper/*.xml
+  config-location:  classpath:/mybatis/config/mybatis-config.xml
+weixin:
+  config:
+    originalid: gh_59714192d766
+    token: sweater
+    app-id: wxd944132e4b278ab0
+    app-secret: 2780faaf8a1699f716dec1ed18c522e5
+    template_id: QnFgrAWmDLGzWBX4t_XYVjsVYJs3VY-ABZ1JrY2Ia7g
+alipay:
+  enabled: true
+  app_id: 9021000157678218
+  merchant_private_key: MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCuUMkZQHr0f6lXkusbC5NpVUOiKT9plu8VICcMLL1hpGK0MOro/2gB+6TTX09sveRTqmNUK1QZM04y+atogyiLkNbJpqcCmpVjtrPG2P6XthJL14rbIkqeN6InXIxTuoWC8Y6ITX2o297i6PcK9EOudhBRnKiqtU/4BciB3J+Cyp7EiAFrIL8Hw2xRLeiNIR8QEMtjiLwFdZCtfA35BizXoDZOUEzaWBeLs+kM9M++UmzeETIdX5Yhq752kUwdnr5ViCAFiW1bn4QvFfDdC6tnhcXhizv4SSdfmmZp3x0i4cgRCKdUWQIFL5CMT/8CfN2jmFQFq8mIMYseqXwjr5abAgMBAAECggEAKTdg1V+xsu4clGBgxtxN1rIac9Vc8RKHJW+cy/woK1Y7IHAQm1cIuK9Pocr/dK7RthartdMo52yCKPtv1B5vD9EHeFa3Vp5GhHVGvNXCHQ0n9lbYtke9bPuqk7QGWiXYO8Xx9bic5bhXUz/SafynpDC2WxW3q+WDKxny9wG7laj/SC80N5mokFRC9/ugRGvwMvXkHnIKOLhw9mpD7nsaqwgKbrCX+bpV1IGdFhY4HmywMcGpCV8lfVFgvCYwHpaQGqIfjUlTad6hXierfhcqbUwNRRgb8RrcyNgRajrNnohnSQPL19UxYBALz4a1jKsVMvvijrdb4nsF/w2YLf5EAQKBgQDWqEHMZetbrmDWUXlDw05lY990D6+UWSW+RphkTDbE4UVPa2EXDSlBVfUEovuMdMFvJkvUXoZv8UoAFXK2GPIOJ7jjFskBDZuZ35GtuLsZzNv9jlWZaXhDoQf24hBzdJ7nhuYKVI9U9BW75VjGj2F26tRDSuCLga//FyUnx3FM2wKBgQDP43gXkVYpbcppY8a+9LTpiKwiyYD9u1Wb+DcmsGT+7GXp0KVaX1E0256ePYMjfdLUxeG8MSqUmocLvFRwJATc1JAHJugPeTLpcEalo/C97+7+XF8/z9woikmTkrUGkb8lgVyNeeOxNY3wJjJ6V974y0A1CBPjmG6jyM/whJQpQQKBgBRwMNOlYKN6Fv5RA5rQHcbJm50RYUZetplHX3stRom4aUEGmFf5iNQPuySV4B2fgEt0+gNefK5r6v/XCvULqwBuB8yXfsv637Xm85f23tm2B7w8sSnKQQkva/K105sqn3asAXs6Uetk0izxyWIehMkt0sgVeQvPbVJ8ga0n8EHBAoGBAIAwp/EAcb0CMnpiSD+f7Z7D5EFfN+c+CUAwAvIce2qmowFW41+ivxR1CI5TJ/ZOtB74FoZRWwxfbT7TVs3/p+/0Mwv19cr01WwVC7tAKEc3GIxIsYNLzVpCS7RwFqiCXvflmQi0TK8NcwTOyPmgDaIk0ubgoEMLz823GmIZnrMBAoGBANISrseq8EF6Gti/AFgdQqaYlvxcMlop/mYvn+C5VbxsD9kmLCnGGSVZDqxYQoY501qABAFvI+uBSVrP1c7BfHvjUl2szCK7eAL/zHOEsNjiUROf9OWIjvW5HTrp1m9G0NFW/DJV2kb7hVBSDsx7J3WmeQUF7DpN8phTaYBWG/PF
+  alipay_public_key: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAjLV/oJ/DOt0r5NgogEu5/gCtC0foDjjCt6A9dUdmk+A8whPO6E5m0gvV3+sgKx6EfgXwcGl0R3bbJ1Qj0C/x2TGNXgosGvitW/vZdDh+NmtelrFRyTLrqr/+S31yszY6lXhKbUfUIFILG7u2ndXIGcOss0owmLKJhGO109x6mxehKD56/sWnv5nSj3izUDiiZeJcpbEtMtDcc9/ilOzcxWmschwxUvxth1TAHl8H2FAj/9brEEJFyKN7n3jCCjxQNrOX+RYYUJDL3U7zYIyRYYLkOqxytRljkqvIuy+Op2XysySSVayFTTwC+74FfAHJPeFTKmQABOmoIdnqJlWicwIDAQAB
+  notify_url: http://sweater-smarket.natapp1.cc/api/v1/alipay/alipay_notify_url
+  return_url: https://gaga.plus
+  gatewayUrl: https://openapi-sandbox.dl.alipaydev.com/gateway.do
 # 日志
 logging:
   level:
