@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -16,5 +18,8 @@ public class PayOrderEntity {
     private String orderId;
     private String payUrl;
     private OrderStatusVO orderStatus;
+    private Integer marketType;
+    private BigDecimal marketDeductionAmount;
+    private BigDecimal payAmount;
 
 }

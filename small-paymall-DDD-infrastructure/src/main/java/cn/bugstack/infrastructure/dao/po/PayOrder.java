@@ -26,5 +26,9 @@ public class PayOrder {
     private Date payTime;
     private Date createTime;
     private Date updateTime;
+    private Integer marketType;
+    private BigDecimal marketDeductionAmount;
+    private BigDecimal payAmount;
+
 
 }

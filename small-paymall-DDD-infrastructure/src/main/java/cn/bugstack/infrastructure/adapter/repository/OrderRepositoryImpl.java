@@ -7,6 +7,7 @@ import cn.bugstack.domain.order.model.entity.OrderEntity;
 import cn.bugstack.domain.order.model.entity.PayOrderEntity;
 import cn.bugstack.domain.order.model.entity.ProductEntity;
 import cn.bugstack.domain.order.model.entity.ShopCartEntity;
+import cn.bugstack.domain.order.model.valobj.MarketTypeVO;
 import cn.bugstack.domain.order.model.valobj.OrderStatusVO;
 import cn.bugstack.infrastructure.dao.IOrderDao;
 import cn.bugstack.infrastructure.dao.po.PayOrder;
@@ -16,6 +17,7 @@ import com.google.common.eventbus.EventBus;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
@@ -45,6 +47,9 @@ public class OrderRepositoryImpl implements IOrderRepository {
                .orderTime(payOrder.getOrderTime())
                .totalAmount(payOrder.getTotalAmount())
                .payUrl(payOrder.getPayUrl())
+               .marketType(payOrder.getMarketType())
+               .payAmount(payOrder.getPayAmount())
+               .marketDeductionAmount(payOrder.getMarketDeductionAmount())
                .build();
     }
 
@@ -59,9 +64,13 @@ public class OrderRepositoryImpl implements IOrderRepository {
         payOrder.setProductName(productEntity.getProductName());
         payOrder.setOrderId(orderEntity.getOrderId());
         payOrder.setOrderTime(orderEntity.getOrderTime());
-        payOrder.setTotalAmount(orderEntity.getTotalAmount());
+        payOrder.setTotalAmount(productEntity.getPrice());
         payOrder.setPayUrl(orderEntity.getPayUrl());
         payOrder.setStatus(orderEntity.getOrderStatusVO().getCode());
+        payOrder.setMarketType(orderEntity.getMarketType());
+        payOrder.setMarketDeductionAmount(BigDecimal.ZERO);
+        payOrder.setPayAmount(productEntity.getPrice());
+
         orderDao.insert(payOrder);
     }
 
@@ -72,6 +81,9 @@ public class OrderRepositoryImpl implements IOrderRepository {
         payOrderreq.setPayUrl(payOrder.getPayUrl());
         payOrderreq.setOrderId(payOrder.getOrderId());
         payOrderreq.setStatus(payOrder.getOrderStatus().getCode());
+        payOrderreq.setMarketType(payOrder.getMarketType());
+        payOrderreq.setMarketDeductionAmount(payOrder.getMarketDeductionAmount());
+        payOrderreq.setPayAmount(payOrder.getPayAmount());
         orderDao.updateOrderPayInfo(payOrderreq);
     }
 

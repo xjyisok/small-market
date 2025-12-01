@@ -20,4 +20,8 @@ public class OrderEntity {
     private BigDecimal totalAmount;
     private OrderStatusVO orderStatusVO;
     private String payUrl;
+    private Integer marketType;
+    private BigDecimal marketDeductionAmount;
+    private BigDecimal payAmount;
+
 }
