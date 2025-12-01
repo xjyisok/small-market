@@ -13,12 +13,14 @@ import cn.bugstack.infrastructure.dao.IOrderDao;
 import cn.bugstack.infrastructure.dao.po.PayOrder;
 import cn.bugstack.types.common.Constants;
 import cn.bugstack.types.event.BaseEvent;
+import com.alibaba.fastjson2.JSON;
 import com.google.common.eventbus.EventBus;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -88,7 +90,9 @@ public class OrderRepositoryImpl implements IOrderRepository {
     }
 
     @Override
-    public void changeOrderPaySuccess(String orderId) {PayOrder payOrderReq = new PayOrder();
+    public void changeOrderPaySuccess(String orderId, Date orderTime) {
+        System.out.println("结算NO-GROUP_BUY_MARKET！！！！！！！！！！！！！！！！！！！！！！！！！！！！");
+        PayOrder payOrderReq = new PayOrder();
         payOrderReq.setOrderId(orderId);
         payOrderReq.setStatus(OrderStatusVO.PAY_SUCCESS.getCode());
         orderDao.changeOrderPaySuccess(payOrderReq);
@@ -97,7 +101,7 @@ public class OrderRepositoryImpl implements IOrderRepository {
                         .tradeNo(orderId)
                 .build());
         PaySuccessMesageEvenet.PaySuccessMessage paySuccessMessage=payEventMessage.getData();
-        eventBus.post(paySuccessMessage);
+        eventBus.post(JSON.toJSON(paySuccessMessage));
     }
 
     @Override
@@ -113,5 +117,53 @@ public class OrderRepositoryImpl implements IOrderRepository {
     @Override
     public List<String> queryTimeoutCloseOrderList() {
         return orderDao.queryTimeoutCloseOrderList();
+    }
+
+    @Override
+    public OrderEntity queryOrderByOrderId(String orderId) {
+        PayOrder payOrder=orderDao.queryOrderByOrderId(orderId);
+        if(null==payOrder){
+            return null;
+        }
+        OrderEntity orderEntity=OrderEntity.builder()
+                .userId(payOrder.getUserId())
+                .productId(payOrder.getProductId())
+                .productName(payOrder.getProductName())
+                .orderId(payOrder.getOrderId())
+                .orderTime(payOrder.getOrderTime())
+                .totalAmount(payOrder.getTotalAmount())
+                .payUrl(payOrder.getPayUrl())
+                .marketType(payOrder.getMarketType())
+                .marketDeductionAmount(payOrder.getMarketDeductionAmount())
+                .payAmount(payOrder.getPayAmount())
+                .build();
+        return orderEntity;
+    }
+
+    @Override
+    public void changeMarketOrderPaySuccess(String orderId) {
+        System.out.println("changeMarketOrderPaySuccess!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        PayOrder payOrderReq = new PayOrder();
+        payOrderReq.setOrderId(orderId);
+        payOrderReq.setStatus(OrderStatusVO.PAY_SUCCESS.getCode());
+        orderDao.changeOrderPaySuccess(payOrderReq);
+    }
+
+    @Override
+    public void changeOrderMarketSettlement(List<String> outTradeNoList) {
+        // 更新拼团结算状态
+        orderDao.changeOrderMarketSettlement(outTradeNoList);
+
+        // 循环成功发送消息 - 一般在公司的场景里，还会有job任务扫描超时没有结算的订单，查询订单状态。查询对方服务端的接口，会被限制一次查询多少，频次多少。
+        outTradeNoList.forEach(outTradeNo -> {
+            BaseEvent.EventMessage<PaySuccessMesageEvenet.PaySuccessMessage> paySuccessMessageEventMessage = paySuccessEvent.buildEventMessage(
+                    PaySuccessMesageEvenet.PaySuccessMessage.builder()
+                            .tradeNo(outTradeNo)
+                            .build());
+            PaySuccessMesageEvenet.PaySuccessMessage paySuccessMessage = paySuccessMessageEventMessage.getData();
+
+            eventBus.post(JSON.toJSONString(paySuccessMessage));
+        });
+
     }
 }

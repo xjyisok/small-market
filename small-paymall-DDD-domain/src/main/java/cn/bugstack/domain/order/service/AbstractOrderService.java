@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 @Slf4j
 @Service
@@ -109,8 +110,19 @@ public abstract class AbstractOrderService implements IOrderService {
     protected abstract PayOrderEntity doPrepayOrder(String userId, String productId, String productName, String orderId, BigDecimal totalAmount,MarketPayDiscountEntity marketPayDiscountEntity) throws AlipayApiException;
     protected abstract void doSaveOrder(CreateOrderAggregate orderAggregate);
     @Override
-    public void changeOrderPaySuccess(String orderId) {
-        repository.changeOrderPaySuccess(orderId);
+    public void changeOrderPaySuccess(String orderId, Date payTime) {
+        OrderEntity orderEntity=repository.queryOrderByOrderId(orderId);
+        if(null==orderEntity){
+            return;
+        }
+        if(MarketTypeVO.GROUP_BUY_MARKET.getCode().equals(orderEntity.getMarketType())){
+            repository.changeMarketOrderPaySuccess(orderId);
+            System.out.println("结算GROUP_BUY_MARKET！！！！！！！！！！！！！！！！！！！！！！！！！！！！");
+            port.settlementMarketPayOrder(orderEntity.getUserId(),orderId,payTime);
+        }else{
+            repository.changeOrderPaySuccess(orderId,payTime);
+        }
+        repository.changeOrderPaySuccess(orderId,payTime);
     }
 
     @Override
