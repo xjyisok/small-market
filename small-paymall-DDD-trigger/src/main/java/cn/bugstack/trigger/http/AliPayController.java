@@ -6,6 +6,7 @@ import cn.bugstack.api.dto.NotifyRequestDTO;
 import cn.bugstack.api.response.Response;
 import cn.bugstack.domain.order.model.entity.PayOrderEntity;
 import cn.bugstack.domain.order.model.entity.ShopCartEntity;
+import cn.bugstack.domain.order.model.valobj.MarketTypeVO;
 import cn.bugstack.domain.order.service.IOrderService;
 import cn.bugstack.types.common.Constants;
 import com.alibaba.fastjson2.JSON;
@@ -42,6 +43,9 @@ public class AliPayController implements IPayService {
             PayOrderEntity payOrderRes = orderService.createOrder(ShopCartEntity.builder()
                     .userId(userId)
                     .productId(productId)
+                    .teamId(createPayRequestDTO.getTeamId())
+                    .marketTypeVO(MarketTypeVO.valueOf(createPayRequestDTO.getMarketType()))
+                    .activityId(createPayRequestDTO.getActivityId())
                     .build());
 
             log.info("商品下单，根据商品ID创建支付单完成 userId:{} productId:{} orderId:{}", userId, productId, payOrderRes.getOrderId());

@@ -12,6 +12,6 @@ public class CreatePayRequestDTO {
     // 活动ID，来自于页面调用拼团试算后，获得的活动ID信息
     private Long activityId;
     // 营销类型 - 0无营销
-    private Integer marketType = 0;
+    private Integer marketType;
 
 }
