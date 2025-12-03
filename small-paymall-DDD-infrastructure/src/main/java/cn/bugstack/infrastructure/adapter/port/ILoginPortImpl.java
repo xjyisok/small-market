@@ -6,6 +6,7 @@ import cn.bugstack.infrastructure.gateway.dto.WeixinQrCodeRequestDTO;
 import cn.bugstack.infrastructure.gateway.dto.WeixinQrCodeResponseDTO;
 import cn.bugstack.infrastructure.gateway.dto.WeixinTemplateMessageDTO;
 import cn.bugstack.infrastructure.gateway.dto.WeixinTokenResponseDTO;
+import cn.hutool.core.util.IdUtil;
 import com.google.common.cache.Cache;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -28,7 +29,12 @@ public class ILoginPortImpl implements ILoginPort {
     @Resource
     IWeixinApiService weixinApiService;
     @Override
-    public String createQrCodeTicket() throws IOException {
+    public String createQrCodeTicket() throws IOException{
+        String sceneStr = IdUtil.getSnowflake().nextIdStr();
+        return createQrCodeTicket(sceneStr);
+    }
+    @Override
+    public String createQrCodeTicket(String sceneStr) throws IOException {
         // 1. 获取 accessToken
         String accessToken = weixinAccessToken.getIfPresent(appid);
         if (null == accessToken) {
@@ -42,10 +48,10 @@ public class ILoginPortImpl implements ILoginPort {
         // 2. 生成 ticket
         WeixinQrCodeRequestDTO weixinQrCodeReq = WeixinQrCodeRequestDTO.builder()
                 .expire_seconds(2592000)
-                .action_name(WeixinQrCodeRequestDTO.ActionNameTypeVO.QR_SCENE.getCode())
+                .action_name(WeixinQrCodeRequestDTO.ActionNameTypeVO.QR_STR_SCENE.getCode())
                 .action_info(WeixinQrCodeRequestDTO.ActionInfo.builder()
                         .scene(WeixinQrCodeRequestDTO.ActionInfo.Scene.builder()
-                                .scene_id(100601)
+                                .scene_str(sceneStr)
                                 .build())
                         .build())
                 .build();
@@ -55,7 +61,6 @@ public class ILoginPortImpl implements ILoginPort {
         assert null != weixinQrCodeRes;
         return weixinQrCodeRes.getTicket();
     }
-
     @Override
     public void sendLoginTemplate(String openid) throws IOException {
         // 1. 获取 accessToken 【实际业务场景，按需处理下异常】

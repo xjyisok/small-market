@@ -4,6 +4,7 @@ import cn.bugstack.domain.auth.adapter.port.ILoginPort;
 import cn.bugstack.domain.auth.service.ILoginService;
 import com.google.common.cache.Cache;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.autoconfigure.jms.JmsProperties;
 import org.springframework.stereotype.Service;
 
@@ -31,5 +32,18 @@ public class WeixinLoginService implements ILoginService {
     @Override
     public String checkLogin(String ticket) {
         return openidToken.getIfPresent(ticket);
+    }
+
+    @Override
+    public String createQrCodeTicket(String sceneStr) throws Exception {
+        return loginport.createQrCodeTicket(sceneStr);
+    }
+
+    @Override
+    public String checkLogin(String ticket, String sceneStr) {
+        String cacheTicket = openidToken.getIfPresent(sceneStr);
+        if (StringUtils.isBlank(cacheTicket) || !cacheTicket.equals(ticket)) return null;
+        return checkLogin(ticket);
+
     }
 }

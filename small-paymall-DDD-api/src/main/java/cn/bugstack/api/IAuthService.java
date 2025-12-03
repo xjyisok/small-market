@@ -5,4 +5,6 @@ import cn.bugstack.api.response.Response;
 public interface IAuthService {
     public Response<String> weixinQrCodeTicket();
     public Response<String> checkLogin(String ticket);
+    public Response<String> weixinQrCodeTicket(String sceneStr);
+    public Response<String> checkLogin(String ticket,String sceneStr);
 }
