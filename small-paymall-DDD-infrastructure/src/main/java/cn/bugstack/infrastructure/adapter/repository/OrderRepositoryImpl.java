@@ -11,6 +11,7 @@ import cn.bugstack.domain.order.model.valobj.MarketTypeVO;
 import cn.bugstack.domain.order.model.valobj.OrderStatusVO;
 import cn.bugstack.infrastructure.dao.IOrderDao;
 import cn.bugstack.infrastructure.dao.po.PayOrder;
+import cn.bugstack.infrastructure.event.EventPublisher;
 import cn.bugstack.types.common.Constants;
 import cn.bugstack.types.event.BaseEvent;
 import com.alibaba.fastjson2.JSON;
@@ -31,6 +32,8 @@ public class OrderRepositoryImpl implements IOrderRepository {
     BaseEvent<PaySuccessMesageEvenet.PaySuccessMessage> paySuccessEvent;
     @Resource
     EventBus eventBus;
+    @Resource
+    EventPublisher eventPublisher;
     @Override
     public OrderEntity queryUnPayOrder(ShopCartEntity shopCartEntity) {
         PayOrder payOrderreq = new PayOrder();
@@ -162,7 +165,8 @@ public class OrderRepositoryImpl implements IOrderRepository {
                             .build());
             PaySuccessMesageEvenet.PaySuccessMessage paySuccessMessage = paySuccessMessageEventMessage.getData();
 
-            eventBus.post(JSON.toJSONString(paySuccessMessage));
+            //eventBus.post(JSON.toJSONString(paySuccessMessage));
+            eventPublisher.publish(paySuccessEvent.topic(),JSON.toJSONString(paySuccessMessage));
         });
 
     }

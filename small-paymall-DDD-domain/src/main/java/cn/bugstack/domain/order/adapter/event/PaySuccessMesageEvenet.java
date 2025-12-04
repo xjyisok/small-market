@@ -23,7 +23,7 @@ public class PaySuccessMesageEvenet extends BaseEvent<PaySuccessMesageEvenet.Pay
 
     @Override
     public String topic() {
-        return "pay_success";
+        return "topic.order_pay_success";
     }
 
     @Data
