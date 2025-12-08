@@ -122,7 +122,7 @@ public abstract class AbstractOrderService implements IOrderService {
         }else{
             repository.changeOrderPaySuccess(orderId,payTime);
         }
-        repository.changeOrderPaySuccess(orderId,payTime);
+        //repository.changeOrderPaySuccess(orderId,payTime);
     }
 
     @Override
