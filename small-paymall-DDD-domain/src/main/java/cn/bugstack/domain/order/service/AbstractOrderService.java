@@ -100,7 +100,7 @@ public abstract class AbstractOrderService implements IOrderService {
         log.info("创建订单-完成，生成支付单。userId: {} orderId: {} payUrl: {}", shopCartEntity.getUserId(), orderEntity.getOrderId(), payOrderEntity.getPayUrl());
         return PayOrderEntity.builder()
                 .orderId(orderEntity.getOrderId())
-                .payUrl("暂无")
+                .payUrl(payOrderEntity.getPayUrl())
                 .build();
 
     }
