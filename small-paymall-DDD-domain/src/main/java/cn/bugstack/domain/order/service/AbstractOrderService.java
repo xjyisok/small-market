@@ -139,4 +139,9 @@ public abstract class AbstractOrderService implements IOrderService {
     public List<String> queryTimeoutCloseOrderList() {
         return repository.queryTimeoutCloseOrderList();
     }
+
+    @Override
+    public List<OrderEntity> queryUserOrderList(String userId, Long lastId, int pageSize) {
+        return repository.queryUserOrderList(userId, lastId, pageSize);
+    }
 }

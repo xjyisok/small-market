@@ -1,5 +1,6 @@
 package cn.bugstack.domain.order.service;
 
+import cn.bugstack.domain.order.model.entity.OrderEntity;
 import cn.bugstack.domain.order.model.entity.PayOrderEntity;
 import cn.bugstack.domain.order.model.entity.ShopCartEntity;
 
@@ -18,4 +19,8 @@ public interface IOrderService {
     boolean changeOrderClose(String orderId);
 
     void changeOrderMarketSettlement(List<String> outTradeNoList);
+
+    List<OrderEntity> queryUserOrderList(String userId, Long lastId, int i);
+
+    boolean refundOrder(String userId, String orderId);
 }
