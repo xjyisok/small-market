@@ -3,6 +3,7 @@ package cn.bugstack.domain.order.service;
 import cn.bugstack.domain.order.model.entity.OrderEntity;
 import cn.bugstack.domain.order.model.entity.PayOrderEntity;
 import cn.bugstack.domain.order.model.entity.ShopCartEntity;
+import com.alipay.api.AlipayApiException;
 
 import java.util.Date;
 import java.util.List;
@@ -22,5 +23,7 @@ public interface IOrderService {
 
     List<OrderEntity> queryUserOrderList(String userId, Long lastId, int i);
 
-    boolean refundOrder(String userId, String orderId);
+    boolean refundMarketOrder(String userId, String orderId);
+
+    boolean refundPayOrder(String userId, String outTradeNo) throws AlipayApiException;
 }

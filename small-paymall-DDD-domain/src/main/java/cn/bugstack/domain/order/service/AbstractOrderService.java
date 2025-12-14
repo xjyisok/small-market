@@ -68,7 +68,7 @@ public abstract class AbstractOrderService implements IOrderService {
         }
 
         ProductEntity productEntity = port.queryProductByProductId(shopCartEntity.getProductId());
-
+        log.info("交易类型：{}",shopCartEntity.getMarketTypeVO().getCode());
         OrderEntity orderEntity = CreateOrderAggregate.buildOrderEntity(productEntity.getProductId(), productEntity.getProductName(),shopCartEntity.getMarketTypeVO().getCode());
 
         CreateOrderAggregate orderAggregate = CreateOrderAggregate.builder()

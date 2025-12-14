@@ -113,4 +113,27 @@ public class IProductPortImpl implements IProductPort {
         }
 
     }
+
+    @Override
+    public void refundMarketPayOrder(String userId, String orderId) {
+        System.out.println("开始退单了！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！");
+        System.out.println("userId:" + userId+",orderId:" + orderId);
+        RefundMarketPayOrderRequestDTO refundMarketPayOrderRequestDTO = new RefundMarketPayOrderRequestDTO();
+        refundMarketPayOrderRequestDTO.setUserId(userId);
+        refundMarketPayOrderRequestDTO.setOutTradeNo(orderId);
+        refundMarketPayOrderRequestDTO.setChannel(chanel);
+        refundMarketPayOrderRequestDTO.setSource(source);
+        try{
+            System.out.println(JSON.toJSONString(refundMarketPayOrderRequestDTO));
+            Call<Response<RefundMarketPayOrderResponseDTO>>call=groupBuyMarketService.refundMarketOrder(refundMarketPayOrderRequestDTO);
+            Response<RefundMarketPayOrderResponseDTO> response=call.execute().body();
+            log.info("订单退单{} requestDTO:{} responseDTO:{}", userId, JSON.toJSONString(refundMarketPayOrderRequestDTO),JSON.toJSONString(response));
+            if(null==response) return;
+            if (!"0000".equals(response.getCode())) {
+                throw new AppException(response.getCode(), response.getInfo());
+            }
+        }catch (Exception e){
+            log.error("退单流程失败{}", userId, e);
+        }
+    }
 }

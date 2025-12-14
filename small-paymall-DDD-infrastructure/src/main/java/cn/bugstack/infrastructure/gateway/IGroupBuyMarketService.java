@@ -1,9 +1,6 @@
 package cn.bugstack.infrastructure.gateway;
 
-import cn.bugstack.infrastructure.gateway.dto.LockMarketPayOrderRequestDTO;
-import cn.bugstack.infrastructure.gateway.dto.LockMarketPayOrderResponseDTO;
-import cn.bugstack.infrastructure.gateway.dto.SettlementMarketPayOrderRequestDTO;
-import cn.bugstack.infrastructure.gateway.dto.SettlementMarketPayOrderResponseDTO;
+import cn.bugstack.infrastructure.gateway.dto.*;
 import cn.bugstack.infrastructure.gateway.response.Response;
 import retrofit2.Call;
 
@@ -14,4 +11,6 @@ public interface IGroupBuyMarketService {
     Call<Response<LockMarketPayOrderResponseDTO>> lockMarketPayOrder(@Body LockMarketPayOrderRequestDTO lockMarketPayOrderRequestDTO);
     @POST("/api/v1/gbm/trade/settlement_market_pay_order")
     Call<Response<SettlementMarketPayOrderResponseDTO>> settlementMarketPayOrder(@Body SettlementMarketPayOrderRequestDTO settlementMarketPayOrderRequestDTO);
+    @POST("/api/v1/gbm/trade/refund_market_pay_order")
+    Call<Response<RefundMarketPayOrderResponseDTO>>refundMarketOrder(@Body RefundMarketPayOrderRequestDTO refundMarketPayOrderRequestDTO);
 }
