@@ -52,10 +52,26 @@ public abstract class AbstractOrderService implements IOrderService {
 
                 payOrderEntity = doPrepayOrder(shopCartEntity.getUserId(), shopCartEntity.getProductId(),
                         unpaidOrderEntity.getProductName(), unpaidOrderEntity.getOrderId(), unpaidOrderEntity.getTotalAmount(), marketPayDiscountEntity);
-            } else if (MarketTypeVO.GROUP_BUY_MARKET.getCode().equals(marketType)) {
+            }/**
+             场景： 这是一笔拼团订单，但是数据库里记录的抵扣金额 (marketDeductionAmount) 竟然是空的 (null)。
+
+             意味着什么： 说明上次中断发生的非常早！系统只把基础订单存进了数据库，还没来得及去“拼团营销微服务”那里锁定坑位和计算优惠价，流程就断了。
+
+             执行动作： 1. 必须先“补票”：调用 this.lockMarketPayOrder 发起 RPC 请求，去营销服务执行锁单，并获取包含优惠信息的 marketPayDiscountEntity。
+             2. 拿着算好的优惠实体，调用重载的 doPrepayOrder 向支付宝申请带有折扣价的支付表单。
+             */
+            else if (MarketTypeVO.GROUP_BUY_MARKET.getCode().equals(marketType)) {
                 payOrderEntity = doPrepayOrder(shopCartEntity.getUserId(), shopCartEntity.getProductId(),
                         unpaidOrderEntity.getProductName(), unpaidOrderEntity.getOrderId(), unpaidOrderEntity.getPayAmount());
-            } else {
+            }/**
+             场景： 这是一笔拼团订单，由于没有满足上一个条件，说明它的 marketDeductionAmount 不为空。
+
+             意味着什么： 说明上次用户点击购买时，系统已经成功去营销微服务锁过单了，优惠价都算好并落进本地数据库了！只是最后一步没向支付宝要到支付链接。
+
+             执行动作： 千万不能再掉一次 lockMarketPayOrder 去锁单了，否则会重复占坑或报错！
+             直接复用数据库里记录的这笔订单原本算好的最终支付金额 (unpaidOrderEntity.getPayAmount())，调用基础版的 doPrepayOrder 向支付宝要支付表单。
+             */
+            else {
                 payOrderEntity = doPrepayOrder(shopCartEntity.getUserId(), shopCartEntity.getProductId(),
                         unpaidOrderEntity.getProductName(), unpaidOrderEntity.getOrderId(), unpaidOrderEntity.getTotalAmount());
             }
